@@ -1,0 +1,13 @@
+.navbar .container-fluid{
+    justify-content:center;
+}
+
+.form-container{
+    
+    padding:115px 25%;
+}
+
+.card{
+    border: 1px solid;
+    padding: 28px;
+}

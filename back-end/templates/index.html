@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DDoS attack prediction system</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="./../static/styles/styles.css">
+</head>
+
+<body>
+
+    <section id="top">
+        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">DDoS Attack Prediction System</a>
+                <!-- <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button> -->
+                <!-- <div class="collapse navbar-collapse justify-content-center" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link" aria-current="page" href="#">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Attacks</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">ResearchPapers</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">About</a>
+                        </li>
+                    </ul> -->
+                <!-- <form class="d-flex" role="search">
+                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                        <button class="btn btn-outline-success" type="submit">Search</button>
+                    </form> -->
+            </div>
+            </div>
+        </nav>
+    </section>
+
+    <section id="form-section">
+        <div class="form-container">
+            <div class="card">
+
+
+                <div class="mb-3">
+
+                    <div class="mb-3">
+                        <label for="exampleInputEmail1" class="form-label">DDoS file</label>
+                        <input type="file" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                        <div id="emailHelp" class="form-text">Upload the DDoS attack file you want to analyze</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="feature_array">Feature Array:</label>
+                        <input type="text" id="feature_array" class="form-control" name="feature_array" value="">
+                    </div>
+                    <button class="btn btn-outline-dark"
+                        onclick="autofill(document.getElementById('feature_array').value.split(','))">
+                        Autofill with features
+                    </button>
+
+                </div>
+
+                <form method="POST" action="/predictFunction">
+
+                    <!-- <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                        <label class="form-check-label" for="exampleCheck1">Check me out</label>
+                    </div> -->
+
+                    <div class="mb-3">
+                        <label for="feature_1">Flow Duration:</label>
+                        <input type="text" id="feature_1" class="form-control" name="feature_1" value="">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="feature_2">Destination IP:</label>
+                        <input type="text" id="feature_2" class="form-control" name="feature_2" value="">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="feature_3">Fwd Packet Length Max:</label>
+                        <input type="text" id="feature_3" class="form-control" name="feature_3" value="">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="feature_4">Flow IAT Mean:</label>
+                        <input type="text" id="feature_4" class="form-control" name="feature_4" value="">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="feature_5">Fwd Packets/s:</label>
+                        <input type="text" id="feature_5" class="form-control" name="feature_5" value="">
+                    </div>
+
+                    <button type="submit"
+                        onclick="showAlert(document.getElementById('feature_array').value.split(',')); callFunction(document.getElementById('feature_array').value.split(','))"
+                        class="btn btn-dark">Submit</button>
+                </form>
+                <br><br>
+
+
+
+                <div class="alert alert-success" role="alert" hidden>No Attack found</div>
+                <div class="alert alert-danger" role="alert" hidden>Attack found!</div>
+            </div>
+
+        </div>
+    </section>
+
+
+
+
+
+
+
+
+
+    <script>
+        function autofill(features) {
+            document.getElementById("feature_1").value = features[0];
+            document.getElementById("feature_2").value = features[1];
+            document.getElementById("feature_3").value = features[2];
+            document.getElementById("feature_4").value = features[3];
+            document.getElementById("feature_5").value = features[4];
+        }
+        function callFunction(features) {
+            const data = {
+                'feature1': 0.1,
+                'feature2': 0.2,
+                'feature3': 0.3
+            };
+
+            fetch('/predictFunction', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        }
+        function showAlert(features) {
+
+
+            const h = features[0];
+            // var h = 5;
+            if (h < 2) {
+                alert("Attack found");
+            } else {
+                alert("There is no attack");
+            }
+        }
+    </script>
+</body>
+
+</html>
+
+
+</body>
+
+</html>
